@@ -45,14 +45,14 @@ module.exports = function(grunt) {
     },
 
     copy: {
-      // example: {
-      //   files: [
-      //     {
-      //       src: 'src/example/index.html',
-      //       dest: 'dist/example/index.html'
-      //     }
-      //   ]
-      // }
+      example: {
+        files: [
+          {
+            src: 'src/example/index.html',
+            dest: 'dist/example/index.html'
+          }
+        ]
+      }
     }
   });
 

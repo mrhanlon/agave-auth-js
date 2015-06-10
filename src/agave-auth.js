@@ -1,12 +1,6 @@
 (function() {
 'use strict';
 
-var log = function() {
-  if (console) {
-    console.log(Array.prototype.slice.call(arguments)[0]);
-  }
-};
-
 var root = this;
 
 var hasRequire = typeof require !== 'undefined';
@@ -50,7 +44,7 @@ if (typeof Agave === 'undefined') {
 Agave.prototype.setClient = function(client) {
   this.client = client;
   return Promise.resolve(this);
-}
+};
 
 Agave.prototype.generateClient = function(options) {
   if (! (options.username && options.password && options.clientName)) {
@@ -85,38 +79,60 @@ Agave.prototype.generateClient = function(options) {
     );
   });
 };
+
 Agave.prototype.setToken = function(options) {
   if (options.token) {
     this.token = options.token;
+
+    // normalize attribute names
+    this.token.accessToken = this.token.access_token;
+    this.token.refreshToken = this.token.refresh_token;
+    this.token.expiresIn = this.token.expires_in;
+    this.token.tokenType = this.token.token_type;
+
     this.api.clientAuthorizations.add('Authorization', new SwaggerClient.ApiKeyAuthorization('Authorization', 'Bearer ' + this.token.accessToken, 'header'));
   } else {
     this.token = null;
   }
   return Promise.resolve(this);
-}
+};
 
 Agave.prototype.newToken = function(options) {
-  var self = this;
-  if (! (self.client && options.username && options.password)) {
-    return Promise.reject('To obtain a token you must have an API client and provide "username" and "password" for Agave Tenant, as well as a "clientName".');
+  if (! (this.client && options.username && options.password)) {
+    return Promise.reject('To obtain a token you must have an API client and provide your "username" and "password" for the Agave Tenant.');
   }
+  var data = [
+    ['username', encodeURIComponent(options.username)],
+    ['password', encodeURIComponent(options.password)],
+    ['grant_type', 'password'],
+    ['scope', 'PRODUCTION']
+  ].map(function(el) { return el.join('='); }).join('&');
+  return this.tokenRequest(data);
+};
 
+Agave.prototype.refreshToken = function() {
+  if (! (this.client && this.token && this.refreshToken)) {
+    return Promise.reject('To obtain a token you must have an API client and a Token with refresh_token set.');
+  }
+  var data = [
+    ['refresh_token', encodeURIComponent(this.token.refreshToken)],
+    ['grant_type', 'refresh_token'],
+    ['scope', 'PRODUCTION']
+  ].map(function(el) { return el.join('='); }).join('&');
+  return this.tokenRequest(data);
+};
+
+Agave.prototype.tokenRequest = function(data) {
+  var tokenEndpoint = this.api.scheme + '://' + this.api.host + '/token';
+  var authorization = 'Basic ' + btoa(this.client.consumerKey + ':' + this.client.consumerSecret);
   return new Promise(function(resolve, reject) {
-    var data;
     var handler;
     var xhr;
-
-    data = [
-      ['username', encodeURIComponent(options.username)],
-      ['password', encodeURIComponent(options.password)],
-      ['grant_type', 'password'],
-      ['scope', 'PRODUCTION']
-    ].map(function(el) { return el.join('='); }).join('&');
 
     handler = function() {
       if (this.readyState === 4) {
         if (this.status === 200) {
-          resolve(this.response);
+          resolve(JSON.parse(this.response));
         } else {
           reject(this.response);
         }
@@ -125,50 +141,11 @@ Agave.prototype.newToken = function(options) {
 
     xhr = new XMLHttpRequest();
     xhr.onreadystatechange = handler;
-    xhr.open('post', self.api.scheme + '://' + self.api.host + '/token', true);
-    xhr.setRequestHeader('Authorization', 'Basic ' + btoa(self.client.consumerKey + ':' + self.client.consumerSecret));
+    xhr.open('post', tokenEndpoint, true);
+    xhr.setRequestHeader('Authorization', authorization);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.send(data);
   });
 };
-
-Agave.prototype.refreshToken = function(options) {
-  var self = this;
-  if (! (self.client && options.username && options.password)) {
-    return Promise.reject('To obtain a token you must have an API client and provide "username" and "password" for Agave Tenant, as well as a "clientName".');
-  }
-
-  return new Promise(function(resolve, reject) {
-    var data;
-    var handler;
-    var xhr;
-
-    data = [
-      ['refresh_token', encodeURIComponent(self.token.refreshToken)],
-      ['grant_type', 'refresh_token'],
-      ['scope', 'PRODUCTION']
-    ].map(function(el) { return el.join('='); }).join('&');
-
-    handler = function() {
-      if (this.readyState === 4) {
-        if (this.status === 200) {
-          resolve(this.response);
-        } else {
-          reject(this.response);
-        }
-      }
-    };
-
-    xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = handler;
-    xhr.open('post', self.api.scheme + '://' + self.api.host + '/token', true);
-    xhr.setRequestHeader('Authorization', 'Basic ' + btoa(self.client.consumerKey + ':' + self.client.consumerSecret));
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.send(data);
-  });
-};
-
-// Agave.prototype.tokenRequest = function() {
-// };
 
 }).call(this);

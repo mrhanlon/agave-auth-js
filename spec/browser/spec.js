@@ -1,4 +1,4 @@
-/*globals Agave, SwaggerClient*/
+/*globals Agave*/
 describe('Sanity Checks', function() {
   'use strict';
 
