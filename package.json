@@ -22,13 +22,14 @@
     "agave-js": "git://github.com/mrhanlon/agave-js.git#d15fad0407dca1ce1555e557548ebb5b7c1d238c",
     "btoa": "^1.1.2",
     "es6-promise": "^2.1.1",
-    "swagger-client": "git://github.com/swagger-api/swagger-js.git#8eddfccb55615763908b2685d37b2c26f79fa744"
+    "swagger-client": "^2.1.1"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
-    "grunt-contrib-copy": "^0.8.0",
+    "grunt-contrib-connect": "^0.10.1",
     "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-uglify": "^0.9.1",
+    "grunt-contrib-watch": "^0.6.1",
     "grunt-karma": "^0.11.0",
     "jasmine": "^2.3.1",
     "jasmine-core": "^2.3.4",

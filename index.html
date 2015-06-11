@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <title>Agave.js Example Auth Usage</title>
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
   <div class="container">
-    <h1>Agave.js</h1>
+    <h1>Agave.js Demo</h1>
 
     <div class="row">
       <div class="col-sm-6">
@@ -47,12 +47,12 @@
         <div id="current-token">(none)</div>
       </div>
     </div>
-
   </div>
-  <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
-  <script src="../vendor/vendor.js"></script>
-  <script src="../agave.js"></script>
-  <script src="../agave-auth.js"></script>
+  <script src="//code.jquery.com/jquery-2.1.4.js"></script>
+  <script src="node_modules/es6-promise/dist/es6-promise.js"></script>
+  <script src="node_modules/swagger-client/browser/swagger-client.js"></script>
+  <script src="node_modules/agave-js/dist/agave.js"></script>
+  <script src="src/agave-auth.js"></script>
   <script>
     (function init(window, $, undefined) {
       var client;
@@ -128,8 +128,6 @@
           $('#current-token').html('(none)');
         });
       });
-
-
     })(this, jQuery);
   </script>
 </body>

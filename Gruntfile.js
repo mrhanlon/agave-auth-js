@@ -44,22 +44,56 @@ module.exports = function(grunt) {
       }
     },
 
-    copy: {
-      example: {
-        files: [
-          {
-            src: 'src/example/index.html',
-            dest: 'dist/example/index.html'
-          }
-        ]
+    watch: {
+      js: {
+        files: ['src/**/*.js'],
+        tasks: ['jshint'],
+        options: {
+          livereload: true
+        }
+      },
+      spec: {
+        files: ['spec/**/*.js'],
+        tasks: ['jshint', 'karma:dev']
+      },
+      livereload: {
+        files: ['src/**/*.js', 'index.html'],
+        options: {
+          livereload: '<%= connect.options.livereload %>'
+        }
       }
-    }
+    },
+
+    connect: {
+      options: {
+        port: 9000,
+        open: true,
+        livereload: 35729,
+        // Change this to '0.0.0.0' to access the server from outside
+        hostname: 'localhost'
+      },
+      livereload: {
+        options: {
+          middleware: function(connect) {
+            return [connect.static('.')];
+          }
+        }
+      },
+    },
   });
 
-  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-karma');
+
+  grunt.registerTask('serve', function() {
+    grunt.task.run([
+      'connect:livereload',
+      'watch'
+    ]);
+  });
 
   grunt.registerTask('test', ['jshint','karma:unit']);
 
