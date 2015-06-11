@@ -35,10 +35,20 @@ if (typeof SwaggerClient === 'undefined') {
 var Agave = root.Agave;
 if (typeof Agave === 'undefined') {
   if (hasRequire) {
-    Agave = require('agave');
+    Agave = require('agave-js');
   } else {
     throw new Error('agave-auth.js requires agave.js');
   }
+}
+
+if(typeof exports !== 'undefined') {
+  if(typeof module !== 'undefined' && module.exports) {
+    exports = module.exports = Agave;
+  }
+  exports.Agave = Agave;
+}
+else {
+  root.Agave = Agave;
 }
 
 Agave.prototype.setClient = function(client) {
