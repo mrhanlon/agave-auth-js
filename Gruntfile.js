@@ -79,7 +79,7 @@ module.exports = function(grunt) {
           }
         }
       },
-    },
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -99,5 +99,5 @@ module.exports = function(grunt) {
 
   grunt.registerTask('dev', ['jshint','karma:dev']);
 
-  grunt.registerTask('default', ['test','uglify','copy']);
+  grunt.registerTask('default', ['test','uglify']);
 };
