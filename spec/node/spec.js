@@ -1,4 +1,4 @@
-var Agave = require('../../src/agave-auth');
+var Agave = require('../../src/agaveapi-auth');
 
 describe('Sanity Checks', function() {
   'use strict';

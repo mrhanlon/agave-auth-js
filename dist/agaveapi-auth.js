@@ -7,7 +7,7 @@
         if (hasRequire) {
             btoa = require("btoa");
         } else {
-            throw new Error("agave-auth.js requires the btoa function");
+            throw new Error("agaveapi-auth.js requires the btoa function");
         }
     }
     var Promise = root.Promise;
@@ -15,7 +15,7 @@
         if (hasRequire) {
             Promise = require("es6-promise").Promise;
         } else {
-            throw new Error("Agave.js requires Promise");
+            throw new Error("AgaveAPI.js requires Promise");
         }
     }
     var SwaggerClient = root.SwaggerClient;
@@ -23,15 +23,15 @@
         if (hasRequire) {
             SwaggerClient = require("swagger-client");
         } else {
-            throw new Error("Agave.js requires SwaggerClient");
+            throw new Error("AgaveAPI.js requires SwaggerClient");
         }
     }
     var Agave = root.Agave;
     if (typeof Agave === "undefined") {
         if (hasRequire) {
-            Agave = require("agave-js");
+            Agave = require("agaveapi-js");
         } else {
-            throw new Error("agave-auth.js requires agave.js");
+            throw new Error("agaveapi-auth.js requires agaveapi.js");
         }
     }
     if (typeof exports !== "undefined") {
@@ -67,21 +67,20 @@
                 }
             }, function(response) {
                 resetAuthZ();
-                self.setClient(response.obj.result);
-                resolve(response.obj);
+                resolve(response.obj.result);
             }, function(error) {
                 resetAuthZ();
                 reject(error.obj);
             });
         });
     };
-    Agave.prototype.setToken = function(options) {
-        if (options.token) {
-            this.token = options.token;
-            this.token.accessToken = this.token.access_token;
-            this.token.refreshToken = this.token.refresh_token;
-            this.token.expiresIn = this.token.expires_in;
-            this.token.tokenType = this.token.token_type;
+    Agave.prototype.setToken = function(token) {
+        if (token && (token.accessToken || token.access_token)) {
+            this.token = {};
+            this.token.accessToken = token.accessToken || token.access_token;
+            this.token.refreshToken = token.refreshToken || token.refresh_token;
+            this.token.expiresIn = token.expiresIn || token.expires_in;
+            this.token.tokenType = token.tokenType || token.token_type;
             this.api.clientAuthorizations.add("Authorization", new SwaggerClient.ApiKeyAuthorization("Authorization", "Bearer " + this.token.accessToken, "header"));
         } else {
             this.token = null;

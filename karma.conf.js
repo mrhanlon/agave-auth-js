@@ -15,10 +15,9 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'node_modules/es6-promise/dist/es6-promise.js',
-      'node_modules/swagger-client/browser/swagger-client.js',
-      'node_modules/agave-js/dist/agave.js',
-      'src/agave-auth.js',
+      'node_modules/agaveapi-js/dist/vendor/vendor.js',
+      'node_modules/agaveapi-js/dist/agaveapi.js',
+      'src/*.js',
       'spec/browser/*.js'
     ],
 
